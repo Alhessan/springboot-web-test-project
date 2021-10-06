@@ -1,59 +1,23 @@
-package com.alhessan.testproject.web;
+package com.alhessan.testproject.web.security;
 
-import com.alhessan.testproject.web.barcodes.Barcode;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.util.Set;
+import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
+import java.util.Date;
 
-@Entity
-@Table(name = "users")
-public class User {
+/**
+ * @author Khalid Elshafie <abolkog@gmail.com>
+ * @Created 08/10/2018 9:26 PM.
+ */
+@Document(collection = "users")
+public class AppUser implements UserDetails{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
-    @Column(nullable = false, length = 64)
-    private String password;
-
-    @Column(name = "user_name", nullable = false, length = 20, unique = true)
-    private String user_name;
-
-    @OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="user_id")
-    private Set<Barcode> barcodes;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUser_name() {
-        return user_name;
-    }
-
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
-    }
-
-
-}
-
-/*
-* @Id
     private String id;
 
     @NotEmpty
@@ -143,4 +107,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }*/
+    }
+}
