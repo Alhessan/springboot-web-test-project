@@ -1,6 +1,5 @@
 package com.alhessan.testproject.web.security;
 
-import com.abolkog.springboot.tut.error.NotFoundException;
 import com.alhessan.testproject.web.User;
 import com.alhessan.testproject.web.UserRepository;
 import com.alhessan.testproject.web.error.NotFoundException;
@@ -28,10 +27,10 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    @Bean
-    private PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    private PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -53,12 +52,13 @@ public class UserService implements UserDetailsService {
         encoders.put("scrypt", new SCryptPasswordEncoder());
         encoders.put("sha256", new StandardPasswordEncoder());
 
-        PasswordEncoder passwordEncoder =
+        PasswordEncoder passwordEncoder1 =
                 new DelegatingPasswordEncoder(idForEncode, encoders);
 
 
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        String encodedPassword = passwordEncoder1.encode(user.getPassword());
         user.setPassword(encodedPassword);
+//        user.setPassword(passwordEncoder().encode(user.getPassword()));
         this.userRepository.save(user);
     }
 

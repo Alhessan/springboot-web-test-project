@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +28,10 @@ public class TokenUtil {
     @Value("${auth.secret}")
     private String TOKEN_SECRET;
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(com.alhessan.testproject.web.User userDetails) {
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIMS_SUBJECT, userDetails.getUsername());
+        claims.put(CLAIMS_SUBJECT, userDetails.getUser_name());
         claims.put(CLAIMS_CREATED, new Date());
 
         return Jwts.builder()
@@ -54,10 +55,10 @@ public class TokenUtil {
         return new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000);
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, com.alhessan.testproject.web.User userDetails) {
         String username = getUserNameFromToken(token);
 
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUser_name()) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {

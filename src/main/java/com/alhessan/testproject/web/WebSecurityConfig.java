@@ -2,28 +2,50 @@ package com.alhessan.testproject.web;
 
 import javax.sql.DataSource;
 
+import com.alhessan.testproject.web.security.AuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Order(2)
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final String[] PUBLIC_ENDPOINTS = {
+        "/api/auth/",     "/api/auth/**","/", "/login", "/register", "/logout"
+    };
     @Autowired
     private DataSource dataSource;
 
+    @Bean
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
+
+    /*
+    *  @Bean
+    AuthFilter authFilter() {
+        return new AuthFilter();
+    }
+*/
     @Bean
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService();
@@ -75,18 +97,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authenticationProvider());
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users").authenticated()
-                .anyRequest().permitAll()
+//                .antMatchers("/users").authenticated()
+                .antMatchers(PUBLIC_ENDPOINTS).permitAll()
+                .anyRequest().authenticated()
+//                .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .usernameParameter("user_name")
-                .defaultSuccessUrl("/users")
+                .defaultSuccessUrl("/")
                 .permitAll()
                 .and()
                 .logout().logoutSuccessUrl("/").permitAll();
+
     }
 
 

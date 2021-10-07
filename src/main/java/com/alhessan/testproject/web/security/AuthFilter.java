@@ -1,5 +1,6 @@
 package com.alhessan.testproject.web.security;
 
+import com.alhessan.testproject.web.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,7 +41,7 @@ public class AuthFilter extends OncePerRequestFilter {
             String username = tokenUtil.getUserNameFromToken(token);
             if(username != null) {
                 UserDetails userDetails = userService.loadUserByUsername(username);
-                if (tokenUtil.isTokenValid(token, userDetails)) {
+                if (tokenUtil.isTokenValid(token, (User) userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);

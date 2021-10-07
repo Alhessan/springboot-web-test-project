@@ -12,3 +12,8 @@ spring:
       prefix:  /WEB-INF/views/
       suffix: .jsp
     static-path-pattern: /resources/**
+
+auth:
+  expiration: 604800
+  secret: webapp3344
+  header: Authorization

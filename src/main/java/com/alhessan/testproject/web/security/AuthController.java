@@ -1,5 +1,6 @@
 package com.alhessan.testproject.web.security;
 
+import com.alhessan.testproject.web.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Created 10/10/2018 10:25 PM.
  */
 @RestController
-@RequestMapping(value = "/api/v1/auth")
+@RequestMapping(value = "/api/auth")
 public class AuthController {
 
     @Autowired
@@ -32,13 +33,12 @@ public class AuthController {
     public JwtResponse signIn(@RequestBody SignInRequest signInRequest) {
 
         final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(signInRequest.getUser_name(), signInRequest.getPassword())
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetails userDetails = userService.loadUserByUsername(signInRequest.getUsername());
-        String token = tokenUtil.generateToken(userDetails);
+        UserDetails userDetails = userService.loadUserByUsername(signInRequest.getUser_name());
+        String token = tokenUtil.generateToken((User)userDetails);
         JwtResponse response = new JwtResponse(token);
         return response;
     }
